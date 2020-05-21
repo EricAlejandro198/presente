@@ -73,3 +73,19 @@ void draw_state(const level *lvl, const state *sta){
     // Stop drawing relative to the camera
     EndMode2D();
 }
+
+
+void DrawWeapons(int buttonR, int buttonY, int buttonT){
+    if(buttonR==1){
+        DrawText("<------------",150,20,15,LIGHTGRAY);
+    }
+    else if(buttonT==1){
+        DrawText("<------------",150,40,15,LIGHTGRAY);
+    }
+
+    else if(buttonY==1){
+        DrawText("<-----------",150,60,15,LIGHTGRAY);
+    }
+
+}
+

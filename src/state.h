@@ -17,6 +17,13 @@
 #define BULLET_SPEED 16
 #define BULLET_RAD   5
 
+#define BULLET_DMG_SNIPER 7
+#define BULLET_SPEED_SNIPER 16
+#define BULLET_RAD_SNIPER   5
+
+#define BULLET_DMG_BAZOOKA 12
+#define BULLET_SPEED_BAZOOKA 10
+#define BULLET_RAD_BAZOOKA   15
 
 // ==== PLAYER DEFINITION
 typedef struct {
@@ -45,7 +52,7 @@ typedef struct {
 #define MAX_ENEMIES 128
 #define MAX_BULLETS 128
 
-#define N_BUTTONS 5
+#define N_BUTTONS 8
 
 // A state represents everything that's happening with the game objects at a given time.
 typedef struct {
@@ -70,14 +77,12 @@ typedef struct {
 state *state_new();
 
 // Updates the state of the game to the next frame.
-void state_update(level *lvl, state *sta);
+void state_update(level *lvl, state *sta, int buttonR, int buttonY, int buttonT);
 
 // Put enemies at random in the state until it has n_enemies enemies.
 void state_populate_random(level *lvl, state *sta, int n_enemies);
 
 // Deletes a state and the memory it requires.
 void state_free(state *sta);
-
-
 
 #endif

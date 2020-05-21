@@ -24,10 +24,11 @@ state *state_new(){
     return sta;
 }
 
-void state_update(level *lvl, state *sta){
+void state_update(level *lvl, state *sta, int buttonR, int buttonY, int buttonT){
 
     // == Update player speed according to buttons
     // (mov_x,mov_y) is a vector that represents the position of the analog control
+
     float mov_x = 0;
     float mov_y = 0;
     mov_x += sta->button_state[0];
@@ -50,7 +51,7 @@ void state_update(level *lvl, state *sta){
     // Lower the player's cooldown by 1
     sta->pla.cooldown -= 1;
     // If the shoot button is pressed and the player cooldown is smaller than 0, shoot a bullet
-    if(sta->button_state[4] && sta->pla.cooldown<=0 && !sta->pla.ent.dead){
+    if(sta->button_state[4] && sta->pla.cooldown<=0 && !sta->pla.ent.dead && buttonR==1){
         // Reset the player cooldown to a positive value so that he can't shoot for that amount of frames
         sta->pla.cooldown = PLAYER_COOLDOWN;
         // Ensure that the new bullet won't be created if that would overflow the bullets array
@@ -69,8 +70,63 @@ void state_update(level *lvl, state *sta){
             //
             new_bullet->ent.rad    = BULLET_RAD;
             new_bullet->ent.hp     = BULLET_DMG;
+
+
         }
     }
+
+    if(sta->button_state[4] && sta->pla.cooldown<=0 && !sta->pla.ent.dead && buttonT==1){
+        // Reset the player cooldown to a positive value so that he can't shoot for that amount of frames
+        sta->pla.cooldown = 50;
+        // Ensure that the new bullet won't be created if that would overflow the bullets array
+        if(sta->n_bullets<MAX_BULLETS){
+            // The new bullet will be in the next unused position of the bullets array
+            bullet *new_bullet = &sta->bullets[sta->n_bullets];
+            sta->n_bullets += 1;
+            // Initialize all bullet fields to 0
+            memset(new_bullet,0,sizeof(bullet));
+            // Start the bullet on the player's position
+            new_bullet->ent.x      = sta->pla.ent.x;
+            new_bullet->ent.y      = sta->pla.ent.y;
+            // Bullet speed is set to the aiming angle
+            new_bullet->ent.vx     =  BULLET_SPEED_SNIPER*cos(sta->aim_angle);
+            new_bullet->ent.vy     = -BULLET_SPEED_SNIPER*sin(sta->aim_angle);
+            //
+            new_bullet->ent.rad    = BULLET_RAD_SNIPER;
+            new_bullet->ent.hp     = BULLET_DMG_SNIPER;
+
+
+
+        }
+    }
+
+    if(sta->button_state[4] && sta->pla.cooldown<=0 && !sta->pla.ent.dead && buttonY==1){
+        
+        sta->pla.cooldown = 150;
+
+
+        if(sta->n_bullets<MAX_BULLETS){
+            bullet *new_bullet = &sta->bullets[sta->n_bullets];
+            sta->n_bullets += 1;
+
+            memset(new_bullet,0,sizeof(bullet));
+
+            new_bullet->ent.x      = sta->pla.ent.x;
+            new_bullet->ent.y      = sta->pla.ent.y;
+
+            new_bullet->ent.vx     =  BULLET_SPEED_BAZOOKA*cos(sta->aim_angle);
+            new_bullet->ent.vy     = -BULLET_SPEED_BAZOOKA*sin(sta->aim_angle);
+
+            new_bullet->ent.rad    = BULLET_RAD_BAZOOKA;
+            new_bullet->ent.hp     = BULLET_DMG_BAZOOKA;
+
+            
+        }
+
+        
+    }
+
+
 
     // == Check bullet-enemy collisions
     for(int i=0;i<sta->n_bullets;i++){
